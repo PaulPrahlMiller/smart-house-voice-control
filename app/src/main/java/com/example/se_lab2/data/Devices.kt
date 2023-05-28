@@ -6,10 +6,10 @@ data class Device(
     val type: String = "",
     val isActive: Boolean = true,
 ) {
-    val image: Int
-        get() = if (isActive) Devices.activeIcons[type]!! else Devices.nonActiveIcons[type]!!
-    val state: String
-        get() = if (isActive) Devices.activeStates[type]!! else Devices.nonActiveStates[type]!!
+    val image: Int?
+        get() = if (isActive) Devices.activeIcons[type] else Devices.nonActiveIcons[type]
+    val state: String?
+        get() = if (isActive) Devices.activeStates[type] else Devices.nonActiveStates[type]
 }
 
 object Devices {

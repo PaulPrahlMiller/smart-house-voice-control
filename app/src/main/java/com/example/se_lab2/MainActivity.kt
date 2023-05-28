@@ -4,8 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.speech.RecognizerIntent
-import android.speech.SpeechRecognizer
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -28,16 +26,18 @@ import com.example.se_lab2.SpeechHelper.convertStringActionToBoolean
 import com.example.se_lab2.ui.screens.controls.ControlsScreen
 import com.example.se_lab2.ui.screens.controls.ControlsViewModel
 import com.example.se_lab2.ui.theme.Se_Lab2Theme
-import java.util.Locale
-
+import com.google.firebase.database.DatabaseReference
 
 class MainActivity : ComponentActivity() {
 
-    private val controlsViewModel by viewModels<ControlsViewModel> { ControlsViewModel.provideFactory() }
+    private lateinit var database: DatabaseReference
+    private val controlsViewModel by viewModels<ControlsViewModel> { ControlsViewModel.provideFactory(database) }
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        database = (application as FirebaseApplication).database
 
         setContent {
             Se_Lab2Theme {
@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
                         FloatingActionButton(
                             onClick = { startSpeechRecognizer() },
                         ) {
-                            Icon(painterResource(R.drawable.light_on), contentDescription = "Speech recognition button")
+                            Icon(painterResource(R.drawable.microphone), contentDescription = "Speech recognition button")
                         }
                     },
                     floatingActionButtonPosition = FabPosition.Center
@@ -60,8 +60,6 @@ class MainActivity : ComponentActivity() {
                         ControlsScreen(controlsViewModel)
                     }
                 }
-                // A surface container using the 'background' color from the theme
-
             }
         }
     }
@@ -108,7 +106,6 @@ class MainActivity : ComponentActivity() {
     companion object {
         private const val SPEECH_REQUEST_CODE = 0
     }
-
 }
 
 @Preview(showBackground = true)

@@ -20,12 +20,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class ControlsViewModel: ViewModel() {
+class ControlsViewModel(private val database: DatabaseReference): ViewModel() {
 
     private val _uiState = MutableStateFlow(ControlsUiState())
     val uiState: StateFlow<ControlsUiState> = _uiState.asStateFlow()
-
-    private val database: DatabaseReference = Firebase.database.reference
 
     init {
         database.addValueEventListener(object: ValueEventListener {
@@ -33,6 +31,7 @@ class ControlsViewModel: ViewModel() {
                 Log.i("onDataChangeLog", snapshot.toString())
                 val devices = mutableListOf<Device>()
                 snapshot.child("Devices").children.map {
+                    if (it.key.isNullOrEmpty()) return // If key is null, points to database root
                     devices.add(Device(it.key!!, it.value as Boolean))
                 }
                 _uiState.compareAndSet(_uiState.value, ControlsUiState(devices))
@@ -52,9 +51,10 @@ class ControlsViewModel: ViewModel() {
 
     companion object {
         fun provideFactory(
+            database: DatabaseReference
         ) : ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return ControlsViewModel() as T
+                return ControlsViewModel(database) as T
             }
         }
     }

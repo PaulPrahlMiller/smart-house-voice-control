@@ -13,11 +13,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.se_lab2.data.Device
-import java.util.Locale
 
 @Composable
 fun DeviceCard(device: Device, onToggle: (String, Boolean) -> Unit) {
@@ -35,20 +33,24 @@ fun DeviceCard(device: Device, onToggle: (String, Boolean) -> Unit) {
                     text = "${device.type.replaceFirstChar { it.uppercase() }}: ",
                     fontWeight = FontWeight.Bold,
                 )
-                Text(
-                    text = device.state,
-                    color = if (device.isActive) Color(0xFF055703) else Color.Red
-                )
+                device.state?.let {
+                    Text(
+                        text = it,
+                        color = if (device.isActive) Color(0xFF055703) else Color.Red
+                    )
+                }
             }
             Row(
                 modifier = Modifier.weight(2f),
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    painterResource(device.image),
-                    contentDescription = null
-                )
+                device.image?.let {
+                    Icon(
+                        painterResource(it),
+                        contentDescription = null
+                    )
+                }
                 Switch(
                     checked = device.isActive,
                     onCheckedChange = {

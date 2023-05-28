@@ -48,16 +48,3 @@ fun ControlsScreen(controlsViewModel: ControlsViewModel) {
         }
     }
 }
-
-@Composable
-fun ControlsScreenContent(
-    state: ControlsUiState,
-) {
-
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ControlsScreenPreview() {
-    ControlsScreenContent(ControlsUiState(devices = Devices.all))
-}
